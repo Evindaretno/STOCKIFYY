@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stockify - Manajemen Produk</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="bg-pink-50 text-gray-800">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md p-6 hidden md:block">
+      <h1 class="text-2xl font-bold mb-8 text-pink-600">📦 Stockify</h1>
+      <nav class="space-y-4">
+        <a href="index.html" class="block">Dashboard</a>
+        <a href="produk.html" class="block font-semibold text-pink-600">Manajemen Produk</a>
+        <a href="stok.html" class="block">Manajemen Stok</a>
+        <a href="users.html" class="block">Manajemen Pengguna</a>
+        <a href="laporan.html" class="block">Laporan</a>
+        <a href="pengaturan.html" class="block">Pengaturan</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <header class="mb-6">
+        <h2 class="text-2xl font-semibold">Manajemen Produk</h2>
+        <p class="text-sm text-gray-500">Kelola informasi produk dan stok awal</p>
+      </header>
+
+      <!-- Tambah Produk -->
+      <section class="bg-white p-6 rounded-xl shadow-sm mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tambah Produk Baru</h3>
+        <form id="productForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" enctype="multipart/form-data">
+          <input type="text" placeholder="Nama Produk" class="border p-2 rounded" required />
+          <input type="text" placeholder="Kategori" class="border p-2 rounded" required />
+          <input type="text" placeholder="Supplier" class="border p-2 rounded" required />
+          <input type="number" placeholder="Stok Awal" class="border p-2 rounded" required />
+          <input type="number" placeholder="Harga (Rp)" class="border p-2 rounded" required />
+          <input type="file" accept="image/*" class="border p-2 rounded" id="productImage" />
+          <div class="col-span-1 md:col-span-2">
+            <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">Simpan</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Daftar Produk -->
+      <section class="bg-white p-6 rounded-xl shadow-sm">
+        <h3 class="text-lg font-semibold mb-4">Daftar Produk</h3>
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="bg-gray-100 text-left">
+              <th class="p-2">Gambar</th>
+              <th class="p-2">Nama</th>
+              <th class="p-2">Kategori</th>
+              <th class="p-2">Supplier</th>
+              <th class="p-2">Stok</th>
+              <th class="p-2">Harga</th>
+              <th class="p-2">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="productTable">
+            <tr class="border-t">
+              <td class="p-2"><img src="https://via.placeholder.com/60" class="w-12 h-12 object-cover rounded" /></td>
+              <td class="p-2">Kabel HDMI</td>
+              <td class="p-2">Elektronik</td>
+              <td class="p-2">PT Kabel Nusantara</td>
+              <td class="p-2">100</td>
+              <td class="p-2">25000</td>
+              <td class="p-2 space-x-2">
+                <button onclick="editProduct(this)" class="text-pink-600 hover:underline">Edit</button>
+                <button onclick="deleteProduct(this)" class="text-red-500 hover:underline">Hapus</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+<script>
+  const productForm = document.getElementById("productForm");
+  const productTable = document.getElementById("productTable");
+  const imageInput = document.getElementById("productImage");
+
+  let produkList = JSON.parse(localStorage.getItem("produkList")) || [];
+  let editingIndex = null;
+
+  // Fungsi catat aktivitas
+  function catatAktivitas(emoji, pesan) {
+    const aktivitas = JSON.parse(localStorage.getItem("aktivitas")) || [];
+    const logBaru = {
+      waktu: new Date().toISOString(),
+      aksi: emoji,
+      pesan: pesan
+    };
+    aktivitas.unshift(logBaru);
+    if (aktivitas.length > 50) aktivitas.pop();
+    localStorage.setItem("aktivitas", JSON.stringify(aktivitas));
+  }
+
+  // Render tabel dari data produk
+  function renderTable() {
+    productTable.innerHTML = "";
+    produkList.forEach((p, i) => {
+      const row = document.createElement("tr");
+      row.className = "border-t";
+      row.innerHTML = `
+        <td class="p-2"><img src="${p.gambar}" class="w-12 h-12 object-cover rounded" /></td>
+        <td class="p-2">${p.nama}</td>
+        <td class="p-2">${p.kategori}</td>
+        <td class="p-2">${p.supplier}</td>
+        <td class="p-2">${p.stok}</td>
+        <td class="p-2">${p.harga}</td>
+        <td class="p-2 space-x-2">
+          <button onclick="editProduct(${i})" class="text-pink-600 hover:underline">Edit</button>
+          <button onclick="deleteProduct(${i})" class="text-red-500 hover:underline">Hapus</button>
+        </td>
+      `;
+      productTable.appendChild(row);
+    });
+  }
+
+  function saveToLocal() {
+    localStorage.setItem("produkList", JSON.stringify(produkList));
+  }
+
+  productForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const inputs = productForm.querySelectorAll("input");
+    const nama = inputs[0].value;
+    const kategori = inputs[1].value;
+    const supplier = inputs[2].value;
+    const stok = inputs[3].value;
+    const harga = inputs[4].value;
+
+    let gambar = "https://via.placeholder.com/60";
+    if (imageInput.files[0]) {
+      gambar = URL.createObjectURL(imageInput.files[0]);
+    }
+
+    const produkBaru = { nama, kategori, supplier, stok, harga, gambar };
+
+    if (editingIndex !== null) {
+      produkList[editingIndex] = produkBaru;
+      catatAktivitas("✏️", `Mengedit produk: ${nama}`);
+      editingIndex = null;
+    } else {
+      produkList.push(produkBaru);
+      catatAktivitas("✅", `Menambahkan produk baru: ${nama}`);
+    }
+
+    saveToLocal();
+    renderTable();
+    productForm.reset();
+  });
+
+  function editProduct(index) {
+    const produk = produkList[index];
+    const inputs = productForm.querySelectorAll("input");
+    inputs[0].value = produk.nama;
+    inputs[1].value = produk.kategori;
+    inputs[2].value = produk.supplier;
+    inputs[3].value = produk.stok;
+    inputs[4].value = produk.harga;
+    imageInput.value = "";
+
+    editingIndex = index;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function deleteProduct(index) {
+    const nama = produkList[index].nama;
+    if (confirm(`Yakin ingin menghapus produk "${nama}"?`)) {
+      produkList.splice(index, 1);
+      saveToLocal();
+      renderTable();
+      catatAktivitas("🗑️", `Menghapus produk: ${nama}`);
+    }
+  }
+
+  // Render saat halaman dimuat
+  renderTable();
+</script>
+</body>
+</html>

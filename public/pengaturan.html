@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stockify - Pengaturan</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="bg-gray-100 text-gray-800" id="body">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md p-6 hidden md:block">
+      <h1 class="text-2xl font-bold mb-8 text-blue-600">📦 Stockify</h1>
+      <nav class="space-y-4">
+        <a href="index.html" class="block">Dashboard</a>
+        <a href="produk.html" class="block">Manajemen Produk</a>
+        <a href="stok.html" class="block">Manajemen Stok</a>
+        <a href="users.html" class="block">Manajemen Pengguna</a>
+        <a href="laporan.html" class="block">Laporan</a>
+        <a href="pengaturan.html" class="block font-semibold text-blue-600">Pengaturan</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-6">
+      <div class="mb-6">
+        <h2 class="text-2xl font-semibold">Pengaturan</h2>
+        <p class="text-sm text-gray-500">Kelola preferensi dan informasi aplikasi</p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-6 space-y-6 max-w-xl">
+        <!-- Nama Pengguna -->
+        <div>
+          <label class="block font-medium mb-1">Nama Pengguna</label>
+          <input id="usernameInput" type="text" placeholder="Masukkan nama pengguna" class="w-full border p-2 rounded" />
+          <button onclick="simpanNamaPengguna()" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Simpan Nama</button>
+        </div>
+
+        <!-- Tema -->
+        <div>
+          <label class="block font-medium mb-1">Tema Tampilan</label>
+          <select id="temaSelect" class="w-full border p-2 rounded">
+            <option value="light">Terang</option>
+            <option value="dark">Gelap</option>
+          </select>
+        </div>
+
+        <!-- Reset Data -->
+        <div>
+          <button onclick="resetData()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Reset Semua Data</button>
+        </div>
+
+        <!-- Info Aplikasi -->
+        <div class="text-sm text-gray-500 border-t pt-4">
+          <p><strong>Versi:</strong> 1.0.0</p>
+          <p><strong>Dikembangkan oleh:</strong> Tim Stockify</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Load tema & username saat halaman dibuka
+    document.addEventListener("DOMContentLoaded", () => {
+      const tema = localStorage.getItem("tema") || "light";
+      const username = localStorage.getItem("username") || "";
+
+      document.getElementById("temaSelect").value = tema;
+      document.getElementById("usernameInput").value = username;
+
+      if (tema === "dark") {
+        document.getElementById("body").classList.replace("bg-gray-100", "bg-gray-900");
+        document.getElementById("body").classList.replace("text-gray-800", "text-white");
+      }
+    });
+
+    // Simpan tema
+    document.getElementById("temaSelect").addEventListener("change", function () {
+      const tema = this.value;
+      localStorage.setItem("tema", tema);
+
+      if (tema === "dark") {
+        document.getElementById("body").classList.replace("bg-gray-100", "bg-gray-900");
+        document.getElementById("body").classList.replace("text-gray-800", "text-white");
+      } else {
+        document.getElementById("body").classList.replace("bg-gray-900", "bg-gray-100");
+        document.getElementById("body").classList.replace("text-white", "text-gray-800");
+      }
+    });
+
+    // Simpan nama pengguna
+    function simpanNamaPengguna() {
+      const nama = document.getElementById("usernameInput").value.trim();
+      localStorage.setItem("username", nama);
+      alert("Nama pengguna disimpan!");
+    }
+
+    // Reset semua data
+    function resetData() {
+      if (confirm("Yakin ingin menghapus semua data dan pengaturan?")) {
+        localStorage.clear();
+        alert("Data berhasil dihapus!");
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

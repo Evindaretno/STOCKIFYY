@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stockify - Laporan</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-pink-100 text-gray-800">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md p-6 hidden md:block">
+      <h1 class="text-2xl font-bold mb-8 text-pink-600">📦 Stockify</h1>
+      <nav class="space-y-4">
+        <a href="index.html" class="block">Dashboard</a>
+        <a href="produk.html" class="block">Manajemen Produk</a>
+        <a href="stok.html" class="block">Manajemen Stok</a>
+        <a href="users.html" class="block">Manajemen Pengguna</a>
+        <a href="laporan.html" class="block font-semibold text-pink-600">Laporan</a>
+        <a href="pengaturan.html" class="block">Pengaturan</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <header class="mb-6">
+        <h2 class="text-2xl font-semibold">Laporan</h2>
+        <p class="text-sm text-gray-500">Pantau data stok dan transaksi barang</p>
+      </header>
+
+      <!-- Filter -->
+      <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row md:items-end gap-4">
+        <div>
+          <label class="text-sm">Dari Tanggal:</label>
+          <input type="date" id="filterDari" class="border p-2 rounded w-full" />
+        </div>
+        <div>
+          <label class="text-sm">Sampai Tanggal:</label>
+          <input type="date" id="filterSampai" class="border p-2 rounded w-full" />
+        </div>
+        <button id="btnFilter" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded h-10 mt-2 md:mt-0">Terapkan Filter</button>
+        <button class="btn-cetak bg-pink-200 hover:bg-pink-300 text-gray-700 px-4 py-2 rounded h-10 mt-2 md:mt-0">Cetak</button>
+      </div>
+
+      <!-- Laporan Stok -->
+      <section class="bg-white p-4 rounded-xl shadow-sm mb-6">
+        <h3 class="text-lg font-semibold mb-4">Laporan Stok Barang</h3>
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 text-left">Nama Barang</th>
+              <th class="p-2 text-left">Kategori</th>
+              <th class="p-2 text-left">Stok Tersedia</th>
+            </tr>
+          </thead>
+          <tbody id="laporanStokBody">
+            <!-- Baris stok akan diisi lewat JS -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Laporan Transaksi -->
+      <section class="bg-white p-4 rounded-xl shadow-sm">
+        <h3 class="text-lg font-semibold mb-4">Laporan Transaksi</h3>
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 text-left">Tanggal</th>
+              <th class="p-2 text-left">Jenis</th>
+              <th class="p-2 text-left">Barang</th>
+              <th class="p-2 text-left">Jumlah</th>
+              <th class="p-2 text-left">Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="laporanTransaksiBody">
+            <!-- Baris transaksi akan diisi lewat JS -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const laporanTransaksiBody = document.getElementById("laporanTransaksiBody");
+  const laporanStokBody = document.getElementById("laporanStokBody");
+
+  const dataMasuk = JSON.parse(localStorage.getItem("barangMasuk")) || [];
+  const dataKeluar = JSON.parse(localStorage.getItem("barangKeluar")) || [];
+
+  const semuaTransaksi = [
+    ...dataMasuk.map(item => ({ ...item, jenis: 'Masuk' })),
+    ...dataKeluar.map(item => ({ ...item, jenis: 'Keluar' }))
+  ];
+
+  semuaTransaksi.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+  function tampilkanTransaksi(transaksi) {
+    laporanTransaksiBody.innerHTML = "";
+    transaksi.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="p-2">${item.tanggal}</td>
+        <td class="p-2 ${item.jenis === 'Masuk' ? 'text-green-600' : 'text-red-600'}">${item.jenis}</td>
+        <td class="p-2">${item.nama}</td>
+        <td class="p-2">${item.jumlah}</td>
+        <td class="p-2">${item.keterangan}</td>
+      `;
+      laporanTransaksiBody.appendChild(tr);
+    });
+  }
+
+  tampilkanTransaksi(semuaTransaksi); // awal: tampilkan semua
+
+  document.getElementById("btnFilter").addEventListener("click", () => {
+    const dari = document.getElementById("filterDari").value;
+    const sampai = document.getElementById("filterSampai").value;
+
+    if (!dari || !sampai) {
+      alert("Harap isi kedua tanggal untuk memfilter.");
+      return;
+    }
+
+    const hasilFilter = semuaTransaksi.filter(item => {
+      return item.tanggal >= dari && item.tanggal <= sampai;
+    });
+
+    tampilkanTransaksi(hasilFilter);
+  });
+
+  const stokMap = {};
+  dataMasuk.forEach(item => {
+    if (!stokMap[item.nama]) stokMap[item.nama] = { kategori: item.kategori, jumlah: 0 };
+    stokMap[item.nama].jumlah += parseInt(item.jumlah);
+  });
+  dataKeluar.forEach(item => {
+    if (!stokMap[item.nama]) stokMap[item.nama] = { kategori: item.kategori, jumlah: 0 };
+    stokMap[item.nama].jumlah -= parseInt(item.jumlah);
+  });
+  Object.entries(stokMap).forEach(([nama, data]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="p-2">${nama}</td>
+      <td class="p-2">${data.kategori}</td>
+      <td class="p-2">${data.jumlah}</td>
+    `;
+    laporanStokBody.appendChild(tr);
+  });
+});
+</script>
+</body>
+</html>
