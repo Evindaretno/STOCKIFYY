@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stockify - Pengaturan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-100 min-h-screen text-gray-800">
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white p-6 text-magenta-600 font-bold">
+      <h1 class="text-2xl mb-8">📦 Stockify</h1>
+      <ul>
+        <li><a href="{{ url('/') }}" class="block mb-4">Dashboard</a></li>
+        <li><a href="{{ url('/pengaturan') }}" class="block text-magenta-700">Pengaturan</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10">
+      <h2 class="text-3xl font-bold mb-2 text-magenta-700">Pengaturan</h2>
+      <p class="mb-6 text-gray-600">Kelola preferensi dan informasi aplikasi</p>
+
+      <div class="bg-white shadow rounded-lg p-6 max-w-lg">
+        <!-- Input nama -->
+        <label class="block mb-2 font-semibold">Nama Pengguna</label>
+        <input type="text" id="namaInput" class="w-full border rounded px-4 py-2 mb-4" placeholder="Masukkan nama kamu" />
+
+        <button id="simpanBtn" class="bg-magenta-600 hover:bg-magenta-700 text-white font-semibold px-4 py-2 rounded mb-6">
+          Simpan Nama
+        </button>
+
+        <hr class="my-6" />
+
+        <label class="block mb-2 font-semibold text-red-600">Reset Data</label>
+        <input disabled class="w-full border rounded px-4 py-2 mb-4 bg-gray-100" value="Semua data akan dihapus" />
+
+        <button id="resetBtn" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded">
+          Reset Semua Data
+        </button>
+
+        <p class="text-sm text-gray-500 mt-6">
+          Versi: 1.0.0<br>
+          Dikembangkan oleh: Tim Stockify
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Saat halaman dimuat, isi input dengan nama yang sudah disimpan (jika ada)
+    window.onload = () => {
+      const savedName = localStorage.getItem("userName");
+      if (savedName) {
+        document.getElementById("namaInput").value = savedName;
+      }
+    };
+
+    // Simpan nama
+    document.getElementById("simpanBtn").addEventListener("click", () => {
+      const nama = document.getElementById("namaInput").value.trim();
+      if (nama === "") {
+        alert("Nama tidak boleh kosong!");
+        return;
+      }
+      localStorage.setItem("userName", nama);
+      alert("Nama berhasil disimpan!");
+    });
+
+    // Reset semua data
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (confirm("Yakin ingin menghapus semua data?")) {
+        localStorage.clear();
+        alert("Semua data berhasil direset!");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+
+  <style>
+    .text-magenta-600 {
+      color: #d0006f;
+    }
+    .bg-magenta-600 {
+      background-color: #d0006f;
+    }
+    .bg-magenta-700 {
+      background-color: #b80062;
+    }
+    .hover\:bg-magenta-700:hover {
+      background-color: #b80062;
+    }
+  </style>
+</body>
+</html>
