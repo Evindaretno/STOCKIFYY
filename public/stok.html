@@ -37,55 +37,59 @@
 
       <!-- Barang Masuk -->
       <section id="masukSection" class="bg-white p-6 rounded-xl shadow-sm">
-        <h3 class="text-lg font-semibold mb-4">Barang Masuk</h3>
-        <form id="formMasuk" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <input type="text" placeholder="Nama Barang" class="border p-2 rounded" required />
-          <input type="number" placeholder="Jumlah" class="border p-2 rounded" required />
-          <input type="text" placeholder="Supplier" class="border p-2 rounded" required />
-          <input type="date" class="border p-2 rounded" required />
-          <div class="col-span-1 md:col-span-2">
-            <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">Simpan</button>
-          </div>
-        </form>
+  <h3 class="text-lg font-semibold mb-4">Barang Masuk</h3>
+  <form id="formMasuk" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <input type="text" placeholder="Nama Barang" class="border p-2 rounded" required />
+    <input type="number" placeholder="Jumlah" class="border p-2 rounded" required />
+    <input type="text" placeholder="Supplier" class="border p-2 rounded" required />
+    <input type="date" class="border p-2 rounded" required />
+    <input type="text" placeholder="Keterangan" class="border p-2 rounded md:col-span-2" />
+    <div class="col-span-1 md:col-span-2">
+      <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">Simpan</button>
+    </div>
+  </form>
         <table class="min-w-full text-sm" id="tabelMasuk">
-          <thead>
-            <tr class="bg-gray-100 text-left">
-              <th class="p-2">Nama</th>
-              <th class="p-2">Jumlah</th>
-              <th class="p-2">Supplier</th>
-              <th class="p-2">Tanggal</th>
-              <th class="p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2">Nama</th>
+        <th class="p-2">Jumlah</th>
+        <th class="p-2">Supplier</th>
+        <th class="p-2">Tanggal</th>
+        <th class="p-2">Keterangan</th>
+        <th class="p-2">Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
 
       <!-- Barang Keluar -->
       <section id="keluarSection" class="bg-white p-6 rounded-xl shadow-sm hidden">
-        <h3 class="text-lg font-semibold mb-4">Barang Keluar</h3>
-        <form id="formKeluar" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <input type="text" placeholder="Nama Barang" class="border p-2 rounded" required />
-          <input type="number" placeholder="Jumlah" class="border p-2 rounded" required />
-          <input type="text" placeholder="Tujuan" class="border p-2 rounded" required />
-          <input type="date" class="border p-2 rounded" required />
-          <div class="col-span-1 md:col-span-2">
-            <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">Simpan</button>
-          </div>
-        </form>
+  <h3 class="text-lg font-semibold mb-4">Barang Keluar</h3>
+  <form id="formKeluar" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <input type="text" placeholder="Nama Barang" class="border p-2 rounded" required />
+    <input type="number" placeholder="Jumlah" class="border p-2 rounded" required />
+    <input type="text" placeholder="Tujuan" class="border p-2 rounded" required />
+    <input type="date" class="border p-2 rounded" required />
+    <input type="text" placeholder="Keterangan" class="border p-2 rounded md:col-span-2" />
+    <div class="col-span-1 md:col-span-2">
+      <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">Simpan</button>
+    </div>
+  </form>
         <table class="min-w-full text-sm" id="tabelKeluar">
-          <thead>
-            <tr class="bg-gray-100 text-left">
-              <th class="p-2">Nama</th>
-              <th class="p-2">Jumlah</th>
-              <th class="p-2">Tujuan</th>
-              <th class="p-2">Tanggal</th>
-              <th class="p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2">Nama</th>
+        <th class="p-2">Jumlah</th>
+        <th class="p-2">Tujuan</th>
+        <th class="p-2">Tanggal</th>
+        <th class="p-2">Keterangan</th>
+        <th class="p-2">Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
     </main>
   </div>
 
@@ -121,20 +125,20 @@
     tampilkanDataAwal();
 
     formMasuk.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const [nama, jumlah, supplier, tanggal] = ambilNilaiInput(formMasuk);
-      const data = { nama, jumlah: parseInt(jumlah), supplier, tanggal };
-      simpanKeStorage("barangMasuk", data);
-      tambahBaris(tabelMasuk, [nama, jumlah, supplier, tanggal], formMasuk);
-    });
+    e.preventDefault();
+    const [nama, jumlah, supplier, tanggal, keterangan] = ambilNilaiInput(formMasuk);
+    const data = { nama, jumlah: parseInt(jumlah), supplier, tanggal, keterangan };
+    simpanKeStorage("barangMasuk", data);
+    tambahBaris(tabelMasuk, [nama, jumlah, supplier, tanggal, keterangan], formMasuk);
+  });
 
-    formKeluar.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const [nama, jumlah, tujuan, tanggal] = ambilNilaiInput(formKeluar);
-      const data = { nama, jumlah: parseInt(jumlah), tujuan, tanggal };
-      simpanKeStorage("barangKeluar", data);
-      tambahBaris(tabelKeluar, [nama, jumlah, tujuan, tanggal], formKeluar);
-    });
+  formKeluar.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const [nama, jumlah, tujuan, tanggal, keterangan] = ambilNilaiInput(formKeluar);
+    const data = { nama, jumlah: parseInt(jumlah), tujuan, tanggal, keterangan };
+    simpanKeStorage("barangKeluar", data);
+    tambahBaris(tabelKeluar, [nama, jumlah, tujuan, tanggal, keterangan], formKeluar);
+  });
 
     function ambilNilaiInput(form) {
       return Array.from(form.querySelectorAll("input")).map(i => i.value);
@@ -165,9 +169,9 @@
       });
 
       const keluar = JSON.parse(localStorage.getItem("barangKeluar")) || [];
-      keluar.forEach(item => {
-        tambahBaris(tabelKeluar, [item.nama, item.jumlah, item.tujuan, item.tanggal], formKeluar);
-      });
+    keluar.forEach(item => {
+      tambahBaris(tabelKeluar, [item.nama, item.jumlah, item.tujuan, item.tanggal, item.keterangan || ""], formKeluar);
+    });
     }
 
     function hapusBaris(btn) {

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - Stockify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Comic Neue', cursive;
+    }
+  </style>
+</head>
+<body class="bg-pink-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
+    <div class="text-5xl mb-4">📝</div>
+    <h1 class="text-2xl font-bold text-pink-600 mb-2">Buat Akun Baru</h1>
+    <p class="text-gray-600 mb-6">Yuk daftar dulu biar bisa pakai Stockify~</p>
+
+    <form id="registerForm">
+      <input type="text" id="nama" placeholder="Nama Lengkap" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
+      <input type="email" id="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
+      <input type="password" id="password" placeholder="Kata Sandi" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
+      <button type="submit" class="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition">Daftar</button>
+    </form>
+
+    <p class="text-sm text-gray-500 mt-4">
+      Sudah punya akun?
+      <a href="login.html" class="text-pink-600 font-semibold hover:underline">Login sekarang</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nama = document.getElementById("nama").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Simpan ke localStorage (bisa dikembangkan lebih aman nantinya)
+      const user = { nama, email, password };
+      localStorage.setItem("registeredUser", JSON.stringify(user));
+
+      // Arahkan ke login.html
+      alert("Registrasi berhasil! Silakan login.");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

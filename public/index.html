@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      background-color: #ffeef2; /* soft pink */
+      background-color: #ffeef2;
     }
     .btn-magenta {
       @apply bg-pink-600 text-white hover:bg-pink-700 px-4 py-2 rounded;
@@ -17,9 +17,19 @@
   </style>
 </head>
 <body class="text-gray-800">
+
+  <!-- Cek Login -->
+  <script>
+    const userLogin = localStorage.getItem("userLogin");
+    if (!userLogin) {
+      window.location.href = "login.html";
+    }
+  </script>
+
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-md p-6 hidden md:block">
+      <h1 class="text-2xl font-bold mb-4">Halo, <span id="namaUser">User</span>!</h1>
       <h1 class="text-2xl font-bold mb-8 text-pink-600">📦 Stockify</h1>
       <nav class="space-y-4">
         <a href="index.html" class="block font-semibold text-pink-600">Dashboard</a>
@@ -29,6 +39,9 @@
         <a href="laporan.html" class="block">Laporan</a>
         <a href="pengaturan.html" class="block">Pengaturan</a>
       </nav>
+
+      <!-- Tombol Logout -->
+      <button onclick="logout()" class="mt-8 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 w-full">Logout</button>
     </aside>
 
     <!-- Main Content -->
@@ -124,21 +137,26 @@
     }
 
     function tampilkanAktivitas() {
-      const aktivitasList = document.getElementById("aktivitasList");
-      const data = JSON.parse(localStorage.getItem("aktivitas")) || [];
+  const aktivitasList = document.getElementById("aktivitasList");
+  const data = JSON.parse(localStorage.getItem("aktivitas")) || [];
 
-      if (data.length === 0) {
-        aktivitasList.innerHTML = '<li class="text-gray-500">Belum ada aktivitas.</li>';
-        return;
-      }
+  if (data.length === 0) {
+    aktivitasList.innerHTML = '<li class="text-gray-500">Belum ada aktivitas.</li>';
+    return;
+  }
 
-      aktivitasList.innerHTML = "";
-      data.slice(-5).reverse().forEach(item => {
-        const li = document.createElement("li");
-        li.innerHTML = `${item.icon || "📌"} ${item.role} ${item.aksi} <strong>${item.nama}</strong>`;
-        aktivitasList.appendChild(li);
-      });
-    }
+  aktivitasList.innerHTML = "";
+  data.slice(-5).reverse().forEach(item => {
+    const icon = item.icon || "📌";
+    const role = item.role || "Pengguna";
+    const aksi = item.aksi || "(aksi tidak diketahui)";
+    const nama = item.nama || "Tidak diketahui";
+
+    const li = document.createElement("li");
+    li.innerHTML = `${icon} ${role} ${aksi} <strong>${nama}</strong>`;
+    aktivitasList.appendChild(li);
+  });
+}
 
     function tampilkanGrafik() {
       const masuk = JSON.parse(localStorage.getItem("barangMasuk")) || [];
@@ -167,14 +185,14 @@
               label: 'Barang Masuk',
               data: masukData,
               backgroundColor: 'rgba(236, 72, 153, 0.2)',
-              borderColor: 'rgba(236, 72, 153, 1)', // Magenta
+              borderColor: 'rgba(236, 72, 153, 1)',
               borderWidth: 2
             },
             {
               label: 'Barang Keluar',
               data: keluarData,
               backgroundColor: 'rgba(190, 24, 93, 0.2)',
-              borderColor: 'rgba(190, 24, 93, 1)', // darker magenta
+              borderColor: 'rgba(190, 24, 93, 1)',
               borderWidth: 2
             }
           ]
@@ -186,9 +204,20 @@
       });
     }
 
+    function logout() {
+      localStorage.removeItem("userLogin");
+      window.location.href = "login.html";
+    }
+
+    // Jalankan semua
     tampilkanStokDashboard();
     tampilkanAktivitas();
     tampilkanGrafik();
+
+  const nama = localStorage.getItem("userName");
+  if (nama) {
+    document.getElementById("namaUser").textContent = nama;
+  }
   </script>
 </body>
 </html>

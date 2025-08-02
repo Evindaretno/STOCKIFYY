@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <td class="p-2 ${item.jenis === 'Masuk' ? 'text-green-600' : 'text-red-600'}">${item.jenis}</td>
         <td class="p-2">${item.nama}</td>
         <td class="p-2">${item.jumlah}</td>
-        <td class="p-2">${item.keterangan}</td>
+        <td class="p-2">${item.keterangan || "-"}</td>
       `;
       laporanTransaksiBody.appendChild(tr);
     });
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="p-2">${nama}</td>
-      <td class="p-2">${data.kategori}</td>
+      <td class="p-2">${data.kategori || "-"}</td>
       <td class="p-2">${data.jumlah}</td>
     `;
     laporanStokBody.appendChild(tr);
