@@ -147,11 +147,13 @@
     function tambahBaris(tbody, dataArr, form) {
       const tr = document.createElement("tr");
       tr.className = "border-t";
-      tr.innerHTML = dataArr.map(d => <td class="p-2">${d}</td>).join('') +
-        <td class="p-2 space-x-2">
-          <button onclick="editBaris(this)" class="text-pink-600 hover:underline">Edit</button>
-          <button onclick="hapusBaris(this)" class="text-red-600 hover:underline">Hapus</button>
-        </td>;
+      tr.innerHTML = `
+  ${dataArr.map(d => `<td class="p-2">${d}</td>`).join('')}
+  <td class="p-2 space-x-2">
+    <button onclick="editBaris(this)" class="text-pink-600 hover:underline">Edit</button>
+    <button onclick="hapusBaris(this)" class="text-red-600 hover:underline">Hapus</button>
+  </td>
+`;
       tbody.appendChild(tr);
       form.reset();
     }
@@ -209,6 +211,8 @@
       tr.remove();
       window.scrollTo({ top: form.offsetTop - 50, behavior: 'smooth' });
     }
+
+    document.addEventListener("DOMContentLoaded", tampilkanDataAwal);
   </script>
 </body>
 </html>

@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-  body {
-    background-color: #f3f4f6; /* Gaya profesional abu terang */
-  }
-  .btn-magenta {
-    @apply bg-pink-600 text-white hover:bg-pink-700 px-4 py-2 rounded;
-  }
-</style>
+    body {
+      background-color: #ffeef2;
+    }
+    .btn-magenta {
+      @apply bg-pink-600 text-white hover:bg-pink-700 px-4 py-2 rounded;
+    }
+  </style>
 </head>
 <body class="text-gray-800">
 
@@ -22,8 +22,8 @@
   <script>
     const userLogin = localStorage.getItem("userLogin");
     if (!userLogin) {
-      window.location.href = "login.html";
-    }
+  window.location.href = "/login";
+}
   </script>
 
   <div class="flex min-h-screen">
@@ -154,55 +154,83 @@
       });
     }
 
-    function tampilkanGrafik() {
-      const masuk = JSON.parse(localStorage.getItem("barangMasuk")) || [];
-      const keluar = JSON.parse(localStorage.getItem("barangKeluar")) || [];
+     function tampilkanGrafik() {
+    // Ambil data dari localStorage, jika kosong gunakan dummy data
+    let masuk = JSON.parse(localStorage.getItem("barangMasuk"));
+    let keluar = JSON.parse(localStorage.getItem("barangKeluar"));
 
-      const hariLabels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-      const masukData = [0, 0, 0, 0, 0, 0];
-      const keluarData = [0, 0, 0, 0, 0, 0];
-
-      masuk.forEach(item => {
-        const hari = new Date(item.tanggal).getDay();
-        if (hari >= 1 && hari <= 5) masukData[hari - 1] += Number(item.jumlah || 0);
-      });
-
-      keluar.forEach(item => {
-        const hari = new Date(item.tanggal).getDay();
-        if (hari >= 1 && hari <= 5) keluarData[hari - 1] += Number(item.jumlah || 0);
-      });
-
-      new Chart(document.getElementById('stockChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: hariLabels,
-          datasets: [
-            {
-              label: 'Barang Masuk',
-              data: masukData,
-              backgroundColor: 'rgba(236, 72, 153, 0.2)',
-              borderColor: 'rgba(236, 72, 153, 1)',
-              borderWidth: 2
-            },
-            {
-              label: 'Barang Keluar',
-              data: keluarData,
-              backgroundColor: 'rgba(190, 24, 93, 0.2)',
-              borderColor: 'rgba(190, 24, 93, 1)',
-              borderWidth: 2
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
+    if (!masuk || masuk.length === 0) {
+      masuk = [
+        { nama: "Barang A", jumlah: 10, tanggal: "2025-07-28" }, // Senin
+        { nama: "Barang A", jumlah: 5, tanggal: "2025-07-29" },  // Selasa
+        { nama: "Barang B", jumlah: 8, tanggal: "2025-08-01" }   // Jumat
+      ];
     }
+
+    if (!keluar || keluar.length === 0) {
+      keluar = [
+        { nama: "Barang A", jumlah: 4, tanggal: "2025-07-28" },  // Senin
+        { nama: "Barang B", jumlah: 2, tanggal: "2025-08-01" }   // Jumat
+      ];
+    }
+
+    // Label hari dan inisialisasi data
+    const hariLabels = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const masukData = Array(7).fill(0);
+    const keluarData = Array(7).fill(0);
+
+    // Hitung data per hari
+    masuk.forEach(item => {
+      const hari = new Date(item.tanggal).getDay();
+      masukData[hari] += Number(item.jumlah || 0);
+    });
+
+    keluar.forEach(item => {
+      const hari = new Date(item.tanggal).getDay();
+      keluarData[hari] += Number(item.jumlah || 0);
+    });
+
+    // Render grafik
+    new Chart(document.getElementById('stockChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: hariLabels,
+        datasets: [
+          {
+            label: 'Barang Masuk',
+            data: masukData,
+            backgroundColor: 'rgba(236, 72, 153, 0.2)',
+            borderColor: 'rgba(236, 72, 153, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: 'Barang Keluar',
+            data: keluarData,
+            backgroundColor: 'rgba(190, 24, 93, 0.2)',
+            borderColor: 'rgba(190, 24, 93, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
 
     function logout() {
       localStorage.removeItem("userLogin");
-      window.location.href = "login.html";
+      window.location.href = "/login";
     }
 
     // Jalankan semua
