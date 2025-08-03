@@ -20,7 +20,7 @@
 
     <form id="loginForm">
       <input type="text" id="username" placeholder="Nama Pengguna" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
-      <input type="password" placeholder="Kata Sandi" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
+      <input type="password" id="password" placeholder="Kata Sandi" class="w-full p-3 mb-4 border border-gray-300 rounded-lg" required>
       <button type="submit" class="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition">Login</button>
     </form>
 
@@ -34,10 +34,20 @@
     document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const username = document.getElementById("username").value;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-      localStorage.setItem("userLogin", username);
+      if (!username || !password) {
+        alert("Harap isi nama pengguna dan kata sandi.");
+        return;
+      }
 
+      // Simpan info login ke localStorage
+      localStorage.setItem("userLogin", "true");
+      localStorage.setItem("userName", username);
+      localStorage.setItem("userRole", "Admin"); // default role, bisa diganti dinamis nanti
+
+      // Redirect ke dashboard
       window.location.href = "{{ url('/') }}";
     });
   </script>
